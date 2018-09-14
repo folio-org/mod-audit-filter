@@ -16,6 +16,7 @@ public class Constant {
   public static final String AUDIT_FILTER_ID = "x-okapi-audit-filter-id";
   public static final String AUDIT_FILTER_ASYNC = "x-okapi-audit-filter-async";
   public static final String AUDIT_FILTER_VERBOSE = "x-okapi-audit-filter-verbose";
+  public static final String AUDIT_FILTER_TEST_CASE = "x-okapi-audit-filter-test-case";
 
   public static final String HTTP_HEADER_REQUEST_IP = "X-Okapi-request-ip";
   public static final String HTTP_HEADER_REQUEST_TIMESTAMP = "X-Okapi-request-timestamp";

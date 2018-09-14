@@ -53,8 +53,7 @@ public class AuditFilterTest {
   private static Header OKAPI_FILTER_POST = new Header(OKAPI_FILTER, PHASE_POST);
   private static Header OKAPI_TENANT = new Header(HTTP_HEADER_TENANT, "diku");
 
-  private static String HEADER_TEST_CASE = "TEST_CASE";
-  private static String HEADER_FAILED_AUDIT = "x-audit-module-failed";
+  private static String HEADER_TEST_CASE = Constant.AUDIT_FILTER_TEST_CASE;
 
   private static Vertx vertx;
   private static MockServer mockServer;
@@ -92,11 +91,11 @@ public class AuditFilterTest {
   public void testRoot(TestContext context) {
     Async async = context.async();
     given()
-        .header(APP_JSON)
-        .get("/")
-        .then().log().ifValidationFails()
-        .statusCode(200)
-        .body(containsString("mod-audit-filter is up running"));
+      .header(APP_JSON)
+      .get("/")
+      .then().log().ifValidationFails()
+      .statusCode(200)
+      .body(containsString("mod-audit-filter is up running"));
     async.complete();
   }
 
@@ -105,11 +104,11 @@ public class AuditFilterTest {
   public void testHealth(TestContext context) {
     Async async = context.async();
     given()
-        .header(APP_JSON)
-        .get("/admin/health")
-        .then().log().ifValidationFails()
-        .statusCode(200)
-        .body(containsString("OK"));
+      .header(APP_JSON)
+      .get("/admin/health")
+      .then().log().ifValidationFails()
+      .statusCode(200)
+      .body(containsString("OK"));
     async.complete();
   }
 
@@ -118,13 +117,13 @@ public class AuditFilterTest {
   public void testAuditDataPreFilter(TestContext context) throws Exception {
     Async async = context.async();
     given()
-        .header(APP_JSON)
-        .header(OKAPI_URL)
-        .header(OKAPI_TENANT)
-        .header(OKAPI_FILTER_PRE)
-        .post(AUDIT_URL)
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(APP_JSON)
+      .header(OKAPI_URL)
+      .header(OKAPI_TENANT)
+      .header(OKAPI_FILTER_PRE)
+      .post(AUDIT_URL)
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
@@ -133,14 +132,14 @@ public class AuditFilterTest {
   public void testAuditDataPostFilterFromSelf(TestContext context) throws Exception {
     Async async = context.async();
     given()
-        .header(APP_JSON)
-        .header(OKAPI_URL)
-        .header(OKAPI_TENANT)
-        .header(OKAPI_FILTER_POST)
-        .header(new Header(AUDIT_FILTER_ID, "abc"))
-        .post(AUDIT_URL)
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(APP_JSON)
+      .header(OKAPI_URL)
+      .header(OKAPI_TENANT)
+      .header(OKAPI_FILTER_POST)
+      .header(new Header(AUDIT_FILTER_ID, "abc"))
+      .post(AUDIT_URL)
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
@@ -149,14 +148,14 @@ public class AuditFilterTest {
   public void testAuditDataPostFilterGet(TestContext context) throws Exception {
     Async async = context.async();
     given()
-        .header(APP_JSON)
-        .header(OKAPI_URL)
-        .header(OKAPI_TENANT)
-        .header(OKAPI_FILTER_POST)
-        .header(new Header(HTTP_HEADER_REQUEST_METHOD, "GET"))
-        .post(AUDIT_URL)
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(APP_JSON)
+      .header(OKAPI_URL)
+      .header(OKAPI_TENANT)
+      .header(OKAPI_FILTER_POST)
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "GET"))
+      .post(AUDIT_URL)
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
@@ -165,14 +164,14 @@ public class AuditFilterTest {
   public void testAuditDataPostFilter200(TestContext context) throws Exception {
     Async async = context.async();
     given()
-        .header(APP_JSON)
-        .header(OKAPI_URL)
-        .header(OKAPI_TENANT)
-        .header(OKAPI_FILTER_POST)
-        .header(new Header(HTTP_HEADER_MODULE_RES, "200"))
-        .post(AUDIT_URL)
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(APP_JSON)
+      .header(OKAPI_URL)
+      .header(OKAPI_TENANT)
+      .header(OKAPI_FILTER_POST)
+      .header(new Header(HTTP_HEADER_MODULE_RES, "200"))
+      .post(AUDIT_URL)
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
@@ -181,13 +180,13 @@ public class AuditFilterTest {
   public void testAuditDataPostFilter1(TestContext context) throws Exception {
     Async async = context.async();
     createBasicRequestSpecification()
-        .header(new Header(HEADER_TEST_CASE, "1"))
-        .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
-        .header(new Header(HTTP_HEADER_MODULE_RES, "201"))
-        .header(new Header(HTTP_HEADER_LOCATION, "/test/" + testId))
-        .post(AUDIT_URL + "/" + testId + "?p1=v1&p1=v2&p2=v3")
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(new Header(HEADER_TEST_CASE, "1"))
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
+      .header(new Header(HTTP_HEADER_MODULE_RES, "201"))
+      .header(new Header(HTTP_HEADER_LOCATION, "/test/" + testId))
+      .post(AUDIT_URL + "/" + testId + "?p1=v1&p1=v2&p2=v3")
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
 
   }
@@ -197,13 +196,13 @@ public class AuditFilterTest {
   public void testAuditDataPostFilter1_1(TestContext context) throws Exception {
     Async async = context.async();
     createBasicRequestSpecification()
-        .header(new Header(HEADER_TEST_CASE, "1_1"))
-        .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
-        .header(new Header(HTTP_HEADER_MODULE_RES, "201"))
-        .header(new Header(HTTP_HEADER_LOCATION, "/" + testId))
-        .post(AUDIT_URL + "/" + testId + "?p1=v1&p1=v2&p2=v3")
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(new Header(HEADER_TEST_CASE, "1_1"))
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
+      .header(new Header(HTTP_HEADER_MODULE_RES, "201"))
+      .header(new Header(HTTP_HEADER_LOCATION, "/" + testId))
+      .post(AUDIT_URL + "/" + testId + "?p1=v1&p1=v2&p2=v3")
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
@@ -212,13 +211,13 @@ public class AuditFilterTest {
   public void testAuditDataPostFilter1_2(TestContext context) throws Exception {
     Async async = context.async();
     createBasicRequestSpecification()
-        .header(new Header(HEADER_TEST_CASE, "1_2"))
-        .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
-        .header(new Header(HTTP_HEADER_MODULE_RES, "201"))
-        .header(new Header(HTTP_HEADER_LOCATION, "http://localhost/test/" + testId))
-        .post(AUDIT_URL + "/" + testId + "?p1=v1&p1=v2&p2=v3")
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(new Header(HEADER_TEST_CASE, "1_2"))
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
+      .header(new Header(HTTP_HEADER_MODULE_RES, "201"))
+      .header(new Header(HTTP_HEADER_LOCATION, "http://localhost/test/" + testId))
+      .post(AUDIT_URL + "/" + testId + "?p1=v1&p1=v2&p2=v3")
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
@@ -227,13 +226,13 @@ public class AuditFilterTest {
   public void testAuditDataPostFilter2(TestContext context) throws Exception {
     Async async = context.async();
     createBasicRequestSpecification()
-        .header(new Header(HEADER_TEST_CASE, "2"))
-        .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
-        .header(new Header(HTTP_HEADER_AUTH_RES, "400"))
-        .body("some auth error")
-        .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(new Header(HEADER_TEST_CASE, "2"))
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
+      .header(new Header(HTTP_HEADER_AUTH_RES, "400"))
+      .body("some auth error")
+      .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
@@ -242,12 +241,13 @@ public class AuditFilterTest {
   public void testAuditDataPostFilter3(TestContext context) throws Exception {
     Async async = context.async();
     createBasicRequestSpecification()
-        .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
-        .header(new Header(HTTP_HEADER_MODULE_RES, "400"))
-        .body("some module error")
-        .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(new Header(HEADER_TEST_CASE, "3"))
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
+      .header(new Header(HTTP_HEADER_MODULE_RES, "400"))
+      .body("some module error")
+      .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
@@ -256,12 +256,13 @@ public class AuditFilterTest {
   public void testAuditDataPostFilter3_1(TestContext context) throws Exception {
     Async async = context.async();
     createBasicRequestSpecification()
-        .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
-        .header(new Header(HTTP_HEADER_MODULE_RES, "400"))
-        .body("")
-        .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(new Header(HEADER_TEST_CASE, "3_1"))
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
+      .header(new Header(HTTP_HEADER_MODULE_RES, "400"))
+      .body("")
+      .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
@@ -270,12 +271,13 @@ public class AuditFilterTest {
   public void testAuditDataPostFilter3_2(TestContext context) throws Exception {
     Async async = context.async();
     createBasicRequestSpecification()
-        .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
-        .header(new Header(HTTP_HEADER_MODULE_RES, "400"))
-        .body(new JsonObject().put("error", "some mod error"))
-        .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(new Header(HEADER_TEST_CASE, "3_2"))
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
+      .header(new Header(HTTP_HEADER_MODULE_RES, "400"))
+      .body(new JsonObject().put("error", "some module error").encode())
+      .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
@@ -285,11 +287,12 @@ public class AuditFilterTest {
     Async async = context.async();
     JsonObject jo = new JsonObject().put("id", testId);
     createBasicRequestSpecification()
-        .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
-        .body(jo.encode())
-        .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(new Header(HEADER_TEST_CASE, "4"))
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
+      .body(jo.encode())
+      .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
@@ -299,11 +302,12 @@ public class AuditFilterTest {
     Async async = context.async();
     JsonObject jo = new JsonObject().put("xid", "abc");
     createBasicRequestSpecification()
-        .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
-        .body(jo.encode())
-        .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(new Header(HEADER_TEST_CASE, "5"))
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
+      .body(jo.encode())
+      .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
@@ -313,11 +317,12 @@ public class AuditFilterTest {
     Async async = context.async();
     JsonObject jo = new JsonObject().put("id", testId);
     createBasicRequestSpecification()
-        .header(new Header(HTTP_HEADER_REQUEST_METHOD, "PUT"))
-        .body(jo.encode())
-        .post(AUDIT_URL + "/" + testId + "?p1=v1&p1=v2&p2=v3")
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(new Header(HEADER_TEST_CASE, "6"))
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "PUT"))
+      .body(jo.encode())
+      .post(AUDIT_URL + "/" + testId + "?p1=v1&p1=v2&p2=v3")
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
@@ -326,10 +331,11 @@ public class AuditFilterTest {
   public void testAuditDataPostFilter7(TestContext context) throws Exception {
     Async async = context.async();
     createBasicRequestSpecification()
-        .header(new Header(HTTP_HEADER_REQUEST_METHOD, "DELETE"))
-        .post(AUDIT_URL + "/" + testId + "?p1=v1&p1=v2&p2=v3")
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(new Header(HEADER_TEST_CASE, "7"))
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "DELETE"))
+      .post(AUDIT_URL + "/" + testId + "?p1=v1&p1=v2&p2=v3")
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
@@ -338,11 +344,11 @@ public class AuditFilterTest {
   public void testAuditDataPostFilter8(TestContext context) throws Exception {
     Async async = context.async();
     createBasicRequestSpecification()
-        .header(new Header(HTTP_HEADER_REQUEST_METHOD, "500"))
-        .header(new Header(HEADER_FAILED_AUDIT, "true"))
-        .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
-        .then().log().ifValidationFails()
-        .statusCode(500);
+      .header(new Header(HEADER_TEST_CASE, "8"))
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "500"))
+      .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
+      .then().log().ifValidationFails()
+      .statusCode(500);
     async.complete();
   }
 
@@ -351,13 +357,14 @@ public class AuditFilterTest {
   public void testAuditDataPostFilter9(TestContext context) throws Exception {
     Async async = context.async();
     createBasicRequestSpecification()
-        .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
-        .header(new Header("test1", "1"))
-        .header(new Header("test1", "2"))
-        .header(new Header("test1", "3"))
-        .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(new Header(HEADER_TEST_CASE, "9"))
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
+      .header(new Header("test1", "1"))
+      .header(new Header("test1", "2"))
+      .header(new Header("test1", "3"))
+      .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
@@ -366,29 +373,30 @@ public class AuditFilterTest {
   public void testAuditDataPostFilter10(TestContext context) throws Exception {
     Async async = context.async();
     createBasicRequestSpecification()
-        .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
-        .body(new String(new char[2000]))
-        .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
-        .then().log().ifValidationFails()
-        .statusCode(200);
+      .header(new Header(HEADER_TEST_CASE, "10"))
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
+      .body(new String(new char[2000]))
+      .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
+      .then().log().ifValidationFails()
+      .statusCode(200);
     async.complete();
   }
 
   private RequestSpecification createBasicRequestSpecification() {
     logger.debug("Preparing call: " + mockTestCount.incrementAndGet());
     RequestSpecification rs = given()
-        .header(APP_JSON)
-        .header(OKAPI_URL)
-        .header(OKAPI_TENANT)
-        .header(new Header(AUDIT_FILTER_ASYNC, "true"))
-        .header(new Header(AUDIT_FILTER_VERBOSE, "true"))
-        .header(OKAPI_FILTER_POST)
-        .header(new Header(HTTP_HEADER_REQUEST_TIMESTAMP, "" + System.currentTimeMillis()))
-        .header(new Header(HTTP_HEADER_USER, "abc"))
-        .header(new Header(HTTP_HEADER_TOKEN,
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkaWt1X3VzZXIiLCJ1c2VyX2lkIjoiYWJjIiwidGVuYW50IjoiZGlrdSJ9.eMu6_Gjjo6G6TeTS3y--GmQGTtWryJtKznpGUUwpa0rDDwY1xLBDTQoHv06_mXYs2GyPOoeERUM_G_BEvpMZcA"))
-        .header(new Header(HTTP_HEADER_REQUEST_ID, "123"))
-        .header(new Header(HTTP_HEADER_REQUEST_IP, "10.0.0.1"));
+      .header(APP_JSON)
+      .header(OKAPI_URL)
+      .header(OKAPI_TENANT)
+      .header(new Header(AUDIT_FILTER_ASYNC, "true"))
+      .header(new Header(AUDIT_FILTER_VERBOSE, "true"))
+      .header(OKAPI_FILTER_POST)
+      .header(new Header(HTTP_HEADER_REQUEST_TIMESTAMP, "" + System.currentTimeMillis()))
+      .header(new Header(HTTP_HEADER_USER, "abc"))
+      .header(new Header(HTTP_HEADER_TOKEN,
+        "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkaWt1X3VzZXIiLCJ1c2VyX2lkIjoiYWJjIiwidGVuYW50IjoiZGlrdSJ9.eMu6_Gjjo6G6TeTS3y--GmQGTtWryJtKznpGUUwpa0rDDwY1xLBDTQoHv06_mXYs2GyPOoeERUM_G_BEvpMZcA"))
+      .header(new Header(HTTP_HEADER_REQUEST_ID, "123"))
+      .header(new Header(HTTP_HEADER_REQUEST_IP, "10.0.0.1"));
 
     for (String header : HTTP_HEADER_EXTRA) {
       rs.header(new Header(header, header + "-val"));
@@ -399,7 +407,7 @@ public class AuditFilterTest {
     body.put("extra_id_2", UUID.randomUUID().toString());
     body.put("jo_ids", getExtraIdAsJsonObject().put("more", getExtraIdAsArray()));
     body.put("arr_ids", getExtraIdAsArray().add(
-        new JsonObject().put("more", getExtraIdAsArray())));
+      new JsonObject().put("more", getExtraIdAsArray())));
     rs.body(body.encode());
 
     return rs;
@@ -407,8 +415,8 @@ public class AuditFilterTest {
 
   private JsonObject getExtraIdAsJsonObject() {
     return new JsonObject()
-        .put("jo_ids_1", UUID.randomUUID().toString())
-        .put("jo_ids_2", UUID.randomUUID().toString());
+      .put("jo_ids_1", UUID.randomUUID().toString())
+      .put("jo_ids_2", UUID.randomUUID().toString());
   }
 
   private JsonArray getExtraIdAsArray() {
@@ -489,9 +497,9 @@ public class AuditFilterTest {
       if ("500".equals(jo.getString("method"))) {
         logger.info("send 500");
         ctx.response()
-            .setStatusCode(500)
-            .setChunked(true)
-            .end("Simulate failed audit module response");
+          .setStatusCode(500)
+          .setChunked(true)
+          .end("Simulate failed audit module response");
         return;
       }
 
@@ -512,21 +520,23 @@ public class AuditFilterTest {
           context.assertEquals(testId, jo.getString("target_id"));
           break;
         case "2":
-          context.assertEquals("400", jo.getString("auth_result"));
-          context.assertEquals("some auth error", jo.getString("auth_error"));
+          context.assertEquals("400", jo.getValue("auth_result").toString());
+          context.assertEquals("some auth error",
+            jo.getJsonObject("auth_error").getString("body"));
           break;
         case "3":
-          context.assertEquals("400", jo.getString("module_result"));
-          context.assertEquals("some module error", jo.getString("module_error"));
+          context.assertEquals("400", jo.getValue("module_result").toString());
+          context.assertEquals("some module error",
+            jo.getJsonObject("module_error").getString("body"));
           break;
         case "3_1":
-          context.assertEquals("400", jo.getString("module_result"));
+          context.assertEquals("400", jo.getValue("module_result").toString());
           context.assertFalse(jo.containsKey("module_error"));
           break;
         case "3_2":
-          context.assertEquals("400", jo.getString("module_result"));
+          context.assertEquals("400", jo.getValue("module_result").toString());
           context.assertEquals("some module error",
-              jo.getJsonObject("module_error").getString("error"));
+            jo.getJsonObject("module_error").getJsonObject("body").getString("error"));
           break;
         case "4":
         case "6":
@@ -534,7 +544,6 @@ public class AuditFilterTest {
           context.assertEquals(testId, jo.getString("target_id"));
           break;
         case "5":
-          context.assertEquals("xid", jo.getString("target_type"));
           context.assertEquals("abc", jo.getString("target_id"));
           break;
         case "8":
@@ -552,10 +561,10 @@ public class AuditFilterTest {
       }
       String id = UUID.randomUUID().toString();
       ctx.response()
-          .setStatusCode(201)
-          .putHeader("Location", "/audit-data/" + id)
-          .setChunked(true)
-          .end(ctx.getBodyAsJson().put("id", id).encodePrettily());
+        .setStatusCode(201)
+        .putHeader("Location", "/audit-data/" + id)
+        .setChunked(true)
+        .end(ctx.getBodyAsJson().put("id", id).encodePrettily());
     }
   }
 
