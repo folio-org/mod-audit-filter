@@ -1,0 +1,51 @@
+{
+	"id": "${artifactId}-${version}",
+	"name": "Audit Filter Module",
+	"requires": [
+		{
+			"id": "audit-storage",
+			"version": "1.0"
+		}
+	],
+	"filters": [
+		{
+			"methods": [
+				"*"
+			],
+			"pathPattern": "/*",
+			"modulePermissions": [
+				"audit.item.post"
+			],
+			"phase": "pre",
+			"type": "request-only"
+		},
+		{
+			"methods": [
+				"*"
+			],
+			"pathPattern": "/*",
+			"modulePermissions": [
+				"audit.item.post"
+			],
+			"phase": "post",
+			"type": "request-only"
+		}
+	],
+	"provides": [],
+	"permissionSets": [],
+	"launchDescriptor": {
+		"dockerImage": "${artifactId}:${version}",
+		"dockerArgs": {
+			"HostConfig": {
+				"PortBindings": {
+					"8081/tcp": [
+						{
+							"HostPort": "%p"
+						}
+					]
+				}
+			}
+		},
+		"dockerPull": false
+	}
+}
