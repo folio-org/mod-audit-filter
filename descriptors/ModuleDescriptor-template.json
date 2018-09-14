@@ -3,7 +3,7 @@
 	"name": "Audit Filter Module",
 	"requires": [
 		{
-			"id": "audit-storage",
+			"id": "audit",
 			"version": "1.0"
 		}
 	],
