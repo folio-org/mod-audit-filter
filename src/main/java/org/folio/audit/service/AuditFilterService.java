@@ -107,6 +107,9 @@ public class AuditFilterService {
     request.putHeader(HTTP_HEADER_TOKEN, headers.get(HTTP_HEADER_TOKEN));
     request.putHeader("Content-Type", "application/json");
     request.putHeader("Accept", "application/json");
+    if (headers.contains(AUDIT_FILTER_TEST_CASE)) {
+      request.putHeader(AUDIT_FILTER_TEST_CASE, headers.get(AUDIT_FILTER_TEST_CASE));
+    }
     request.setChunked(true);
     request.write(Json.encode(auditData));
     request.end();
@@ -148,7 +151,7 @@ public class AuditFilterService {
     }
     if (!ctx.pathParams().isEmpty()) {
       auditData.put("path_params",
-          AuditUtil.convertMultiMapToJsonObject(MultiMap.caseInsensitiveMultiMap().addAll(ctx.pathParams())));
+        AuditUtil.convertMultiMapToJsonObject(MultiMap.caseInsensitiveMultiMap().addAll(ctx.pathParams())));
     }
     auditData.put("request_id", headers.get(HTTP_HEADER_REQUEST_ID));
     addResult(ctx, HTTP_HEADER_AUTH_RES, auditData, "auth");
@@ -332,9 +335,9 @@ public class AuditFilterService {
     }
     try {
       JsonObject jo = new JsonObject(value);
-      parent.put(key, jo);
+      parent.put(key, new JsonObject().put("body", jo));
     } catch (Exception e) {
-      parent.put(key, value);
+      parent.put(key, new JsonObject().put("body", value));
     }
   }
 
