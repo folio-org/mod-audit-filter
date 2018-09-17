@@ -1,3 +1,2 @@
 ## 0.0.1
-* Initial checkin (pre-release placeholder)
-
+* Initial Okapi Pre/Post filter implementation for audit module
