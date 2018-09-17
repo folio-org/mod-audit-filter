@@ -20,7 +20,7 @@ with further FOLIO Developer documentation at [dev.folio.org](https://dev.folio.
 
 ### Issue tracker
 
-See project [MODAUDIT](https://issues.folio.org/browse/MODAUD)
+See project [MODAFILT](https://issues.folio.org/browse/MODAFILT)
 at the [FOLIO issue tracker](https://dev.folio.org/guidelines/issue-tracker).
 
 ### Quick start
