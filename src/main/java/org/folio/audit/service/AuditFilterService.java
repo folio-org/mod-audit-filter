@@ -50,6 +50,9 @@ public class AuditFilterService {
     String phase = "" + ctx.request().headers().get(OKAPI_FILTER);
     if (phase.startsWith(PHASE_PRE)) {
       logger.debug(PHASE + " : " + PHASE_PRE);
+      if (async) {
+        ctx.response().setChunked(true).end();
+      }
     } else if (phase.startsWith(PHASE_POST)) {
       logger.debug(PHASE + " : " + PHASE_POST);
       JsonObject auditData = collectAuditData(ctx);
@@ -58,9 +61,9 @@ public class AuditFilterService {
         saveAuditData(ctx, auditData, handler -> {
           if (async) {
             if (handler.succeeded()) {
-              ctx.response().end();
+              ctx.response().setChunked(true).end();
             } else {
-              ctx.response().setStatusCode(500).end();
+              ctx.response().setChunked(true).setStatusCode(500).end();
             }
           }
         });
@@ -69,7 +72,7 @@ public class AuditFilterService {
 
     // return ASAP. Errors can be found in the log.
     if (!async) {
-      ctx.response().end();
+      ctx.response().setChunked(true).end();
     }
   }
 
