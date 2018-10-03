@@ -44,35 +44,41 @@ public class AuditFilterService {
    */
   public void prePostHandler(RoutingContext ctx) {
 
-    // async is only used for tests
+    // async is only used at tests
     boolean async = ctx.request().headers().contains(AUDIT_FILTER_ASYNC);
 
     String phase = "" + ctx.request().headers().get(OKAPI_FILTER);
-    if (phase.startsWith(PHASE_PRE)) {
-      logger.debug(PHASE + " : " + PHASE_PRE);
-      if (async) {
-        ctx.response().setChunked(true).end();
+    if (phase.startsWith(PHASE_POST)) {
+      JsonObject auditData = null;
+      try {
+        auditData = collectAuditData(ctx);
+      } catch (Exception e) {
+        logger.warn("Error to extract auditData: ", e);
+        ctx.response().setStatusCode(500).end();
+        return;
       }
-    } else if (phase.startsWith(PHASE_POST)) {
-      logger.debug(PHASE + " : " + PHASE_POST);
-      JsonObject auditData = collectAuditData(ctx);
       if (auditData != null) {
-        logger.debug(auditData.encodePrettily());
-        saveAuditData(ctx, auditData, handler -> {
-          if (async) {
-            if (handler.succeeded()) {
-              ctx.response().setChunked(true).end();
-            } else {
-              ctx.response().setChunked(true).setStatusCode(500).end();
+        try {
+          saveAuditData(ctx, auditData, handler -> {
+            if (async) {
+              if (handler.failed()) {
+                logger.warn("Error to save auditData: ", handler.cause());
+                ctx.response().setStatusCode(500);
+              }
+              ctx.response().end();
+              return;
             }
-          }
-        });
+          });
+        } catch (Exception e) {
+          logger.warn("Error to save auditData: ", e);
+          ctx.response().setStatusCode(500).close();
+          return;
+        }
       }
     }
 
-    // return ASAP. Errors can be found in the log.
     if (!async) {
-      ctx.response().setChunked(true).end();
+      ctx.response().end();
     }
   }
 
