@@ -112,8 +112,12 @@ public class AuditFilterService {
       handler.handle(Future.failedFuture(th));
     });
     request.putHeader(AUDIT_FILTER_ID, auditFilterId);
-    request.putHeader(HTTP_HEADER_TENANT, headers.get(HTTP_HEADER_TENANT));
-    request.putHeader(HTTP_HEADER_TOKEN, headers.get(HTTP_HEADER_TOKEN));
+    if (headers.contains(HTTP_HEADER_TENANT)) {
+      request.putHeader(HTTP_HEADER_TENANT, headers.get(HTTP_HEADER_TENANT));
+    }
+    if (headers.contains(HTTP_HEADER_TOKEN)) {
+      request.putHeader(HTTP_HEADER_TOKEN, headers.get(HTTP_HEADER_TOKEN));
+    }
     request.putHeader("Content-Type", "application/json");
     request.putHeader("Accept", "application/json");
     if (headers.contains(AUDIT_FILTER_TEST_CASE)) {
