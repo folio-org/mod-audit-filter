@@ -30,8 +30,7 @@ Compile with `mvn clean install`
 Run the local stand-alone instance:
 
 ```
-java -jar target/mod-audit-filter-fat.jar \
-  -Dhttp.port=8085 embed_postgres=true
+java -jar target/mod-audit-filter-fat.jar -Dhttp.port=8081
 ```
 
 ### API documentation
