@@ -157,10 +157,7 @@ public class AuditFilterService {
       return true;
     }
     // skip GET
-    if ("GET".equals(method) || "200".equals(headers.get(HTTP_HEADER_MODULE_RES))) {
-      return true;
-    }
-    return false;
+    return ("GET".equals(method) || "200".equals(headers.get(HTTP_HEADER_MODULE_RES)));
   }
 
   // populate main fields
