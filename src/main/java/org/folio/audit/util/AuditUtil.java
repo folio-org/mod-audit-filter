@@ -10,9 +10,12 @@ import io.vertx.core.json.JsonObject;
 
 public class AuditUtil {
 
+  private AuditUtil() {
+  }
+
   /**
    * Decode Okapi token to {@link JsonObject}
-   * 
+   *
    * @param okapiToken
    * @return
    */
@@ -34,7 +37,7 @@ public class AuditUtil {
   /**
    * Convert {@link MultiMap} to {@link JsonObject}. Collapse values with same key
    * to an array.
-   * 
+   *
    * @param multiMap
    * @return
    */
@@ -59,7 +62,7 @@ public class AuditUtil {
 
   /**
    * Check if given string is a {@link UUID}.
-   * 
+   *
    * @param id
    * @return
    */
