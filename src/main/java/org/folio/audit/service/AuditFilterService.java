@@ -99,9 +99,7 @@ public class AuditFilterService {
         handler.handle(Future.succeededFuture());
       } else {
         logger.error("Failed to create audit record. Status code: " + response.statusCode());
-        response.bodyHandler(b -> {
-          logger.error(b.toString());
-        });
+        response.bodyHandler(b -> logger.error(b.toString()));
         handler.handle(Future.failedFuture("Failed to create audit record"));
       }
       auditFilterIds.remove(auditFilterId);
@@ -130,24 +128,42 @@ public class AuditFilterService {
 
   private JsonObject collectAuditData(RoutingContext ctx) {
 
+    if (skipping(ctx)) {
+      return null;
+    }
+
     JsonObject auditData = new JsonObject();
 
-    HttpServerRequest req = ctx.request();
-    MultiMap headers = req.headers();
+    populateMainFields(auditData, ctx);
 
-    // call from filter itself
+    JsonObject bodyJson = getBodyAsJsonObject(ctx);
+
+    populateMainTarget(auditData, bodyJson, ctx);
+
+    populateExtraFields(auditData, bodyJson, ctx);
+
+    populateAllDataForDebugging(auditData, ctx);
+
+    return auditData;
+  }
+
+  // skipping
+  private boolean skipping(RoutingContext ctx) {
+    MultiMap headers = ctx.request().headers();
+    String method = headers.get(HTTP_HEADER_REQUEST_METHOD);
+    // skip self-calling
     if (headers.contains(AUDIT_FILTER_ID)) {
       auditFilterIds.remove(headers.get(AUDIT_FILTER_ID));
-      return null;
+      return true;
     }
-
-    String method = headers.get(HTTP_HEADER_REQUEST_METHOD);
-    String path = ctx.normalisedPath();
-
     // skip GET
-    if ("GET".equals(method) || "200".equals(headers.get(HTTP_HEADER_MODULE_RES))) {
-      return null;
-    }
+    return ("GET".equals(method) || "200".equals(headers.get(HTTP_HEADER_MODULE_RES)));
+  }
+
+  // populate main fields
+  private void populateMainFields(JsonObject auditData, RoutingContext ctx) {
+    HttpServerRequest req = ctx.request();
+    MultiMap headers = req.headers();
 
     auditData.put("timestamp", headers.get(HTTP_HEADER_REQUEST_TIMESTAMP));
     auditData.put("tenant", headers.get(HTTP_HEADER_TENANT));
@@ -156,9 +172,9 @@ public class AuditFilterService {
     if (okapiToken != null && !okapiToken.isEmpty()) {
       auditData.put("login", AuditUtil.decodeOkapiToken(okapiToken).getString("sub"));
     }
-    auditData.put("method", method);
+    auditData.put("method", headers.get(HTTP_HEADER_REQUEST_METHOD));
     auditData.put("uri", req.absoluteURI());
-    auditData.put("path", path);
+    auditData.put("path", ctx.normalisedPath());
     if (!req.params().isEmpty()) {
       auditData.put("params", AuditUtil.convertMultiMapToJsonObject(req.params()));
     }
@@ -169,10 +185,15 @@ public class AuditFilterService {
     auditData.put("request_id", headers.get(HTTP_HEADER_REQUEST_ID));
     addResult(ctx, HTTP_HEADER_AUTH_RES, auditData, "auth");
     addResult(ctx, HTTP_HEADER_MODULE_RES, auditData, "module");
+  }
 
-    JsonObject bodyJson = getBodyAsJsonObject(ctx);
+  // populate main target type and id
+  private void populateMainTarget(JsonObject auditData, JsonObject bodyJson, RoutingContext ctx) {
+    HttpServerRequest req = ctx.request();
+    MultiMap headers = req.headers();
+    String method = headers.get(HTTP_HEADER_REQUEST_METHOD);
+    String path = ctx.normalisedPath();
 
-    // populate main target type and id
     if ("201".equals(headers.get(HTTP_HEADER_MODULE_RES)) && headers.contains(HTTP_HEADER_LOCATION)) {
       addTarget(auditData, headers.get(HTTP_HEADER_LOCATION), path);
     } else {
@@ -197,8 +218,11 @@ public class AuditFilterService {
         break;
       }
     }
+  }
 
-    // extra targets
+  // populate extra fields
+  private void populateExtraFields(JsonObject auditData, JsonObject bodyJson, RoutingContext ctx) {
+    MultiMap headers = ctx.request().headers();
     if (bodyJson != null) {
       JsonObject moreTargets = new JsonObject();
       findExtraIds(bodyJson, moreTargets, "");
@@ -213,11 +237,14 @@ public class AuditFilterService {
         auditData.put(header, headers.get(header));
       }
     }
+  }
 
-    // capture all headers and trimmed body for debugging purpose
+  // capture all headers and trimmed body for debugging purpose
+  private void populateAllDataForDebugging(JsonObject auditData, RoutingContext ctx) {
+    MultiMap headers = ctx.request().headers();
     if (headers.contains(AUDIT_FILTER_VERBOSE)) {
       JsonObject reqHeaders = new JsonObject();
-      ctx.request().headers().forEach(entry -> {
+      headers.forEach(entry -> {
         String key = entry.getKey();
         String value = entry.getValue();
         if (reqHeaders.containsKey(key)) {
@@ -244,8 +271,6 @@ public class AuditFilterService {
       }
       logger.debug(Json.encodePrettily(auditData));
     }
-
-    return auditData;
   }
 
   private JsonObject getBodyAsJsonObject(RoutingContext ctx) {

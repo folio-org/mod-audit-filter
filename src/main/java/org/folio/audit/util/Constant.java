@@ -1,9 +1,13 @@
 package org.folio.audit.util;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Constant {
+
+  private Constant() {
+  }
 
   public static final String OKAPI_FILTER = "X-Okapi-Filter";
   public static final String PHASE = "PHASE";
@@ -28,7 +32,8 @@ public class Constant {
   public static final String HTTP_HEADER_AUTH_RES = "x-okapi-auth-result";
   public static final String HTTP_HEADER_MODULE_RES = "x-okapi-handler-result";
   public static final String HTTP_HEADER_LOCATION = "location";
-  public static final List<String> HTTP_HEADER_EXTRA = Arrays.asList("x-forwarded-for", "x-real-ip");
+  public static final List<String> HTTP_HEADER_EXTRA = Collections
+    .unmodifiableList(Arrays.asList("x-forwarded-for", "x-real-ip"));
 
   public static final String AUDIT_TARGET_TYPE = "target_type";
   public static final String AUDIT_TARGET_ID = "target_id";

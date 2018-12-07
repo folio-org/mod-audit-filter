@@ -13,16 +13,13 @@ public class AuditFilterVerticle extends AbstractVerticle {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  private int port;
-  private AuditFilterService auditFilterService;
-
   @Override
   public void start(Future<Void> fut) throws Exception {
 
-    port = Integer.parseInt(
+    int port = Integer.parseInt(
       System.getProperty("port", System.getProperty("http.port", "" + context.config().getInteger("port", 8081))));
 
-    auditFilterService = new AuditFilterService(vertx);
+    AuditFilterService auditFilterService = new AuditFilterService(vertx);
 
     Router router = Router.router(vertx);
     // root
