@@ -39,7 +39,7 @@ There is no public API exposed by this module.
 
 ### Code analysis
 
-[SonarQube analysis](https://sonarcloud.io/dashboard?id=org.folio.rest%3Amod-audit-filter).
+[SonarQube analysis](https://sonarcloud.io/dashboard?id=org.folio%3Amod-audit-filter).
 
 ### Download and configuration
 
