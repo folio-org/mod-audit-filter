@@ -300,7 +300,7 @@ public class AuditFilterService {
         findExtraIds((JsonObject) val, parent, key);
       } else if (val instanceof JsonArray) {
         findExtraIds((JsonArray) val, parent, key);
-      } else if (AuditUtil.isUUID(val.toString())) {
+      } else if (AuditUtil.isUUID("" + val)) {
         if (parent.containsKey(key)) {
           if (parent.getValue(key) instanceof JsonArray) {
             JsonArray ja = parent.getJsonArray(key);
