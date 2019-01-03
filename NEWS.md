@@ -1,3 +1,6 @@
+## 0.0.4
+* MODAFILT-5: check content type before converting to JSON
+
 ## 0.0.3
 * Update dependencies and code refactoring
 
