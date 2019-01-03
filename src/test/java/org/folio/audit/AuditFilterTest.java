@@ -11,6 +11,7 @@ import static org.folio.audit.util.Constant.*;
 import static org.hamcrest.Matchers.containsString;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import io.restassured.specification.RequestSpecification;
 import io.vertx.core.DeploymentOptions;
@@ -311,6 +312,22 @@ public class AuditFilterTest {
     async.complete();
   }
 
+  // POST with non-JSON header
+  @Test
+  public void testAuditDataPostFilter5_1(TestContext context) throws Exception {
+    Async async = context.async();
+    JsonObject jo = new JsonObject().put("xid", "abc");
+    createBasicRequestSpecification()
+      .header(new Header(HEADER_TEST_CASE, "5_1"))
+      .header(new Header(HTTP_HEADER_REQUEST_METHOD, "POST"))
+      .contentType(ContentType.XML)
+      .body(jo.encode())
+      .post(AUDIT_URL + "?p1=v1&p1=v2&p2=v3")
+      .then().log().ifValidationFails()
+      .statusCode(200);
+    async.complete();
+  }
+
   // PUT
   @Test
   public void testAuditDataPostFilter6(TestContext context) throws Exception {
@@ -545,6 +562,9 @@ public class AuditFilterTest {
           break;
         case "5":
           context.assertEquals("abc", jo.getString("target_id"));
+          break;
+        case "5_1":
+          context.assertNull(jo.getString("target_id"));
           break;
         case "8":
           context.assertEquals("500", jo.getString("method"));

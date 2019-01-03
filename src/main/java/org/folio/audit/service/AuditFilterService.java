@@ -150,13 +150,13 @@ public class AuditFilterService {
   // skipping
   private boolean skipping(RoutingContext ctx) {
     MultiMap headers = ctx.request().headers();
-    String method = headers.get(HTTP_HEADER_REQUEST_METHOD);
     // skip self-calling
     if (headers.contains(AUDIT_FILTER_ID)) {
       auditFilterIds.remove(headers.get(AUDIT_FILTER_ID));
       return true;
     }
     // skip GET
+    String method = headers.get(HTTP_HEADER_REQUEST_METHOD);
     return ("GET".equals(method) || "200".equals(headers.get(HTTP_HEADER_MODULE_RES)));
   }
 
@@ -274,11 +274,14 @@ public class AuditFilterService {
   }
 
   private JsonObject getBodyAsJsonObject(RoutingContext ctx) {
-    try {
-      return new JsonObject(ctx.getBodyAsString());
-    } catch (Exception e) {
-      return null;
+    if (ctx.request().getHeader("Content-Type").toLowerCase().contains("json")) {
+      try {
+        return new JsonObject(ctx.getBodyAsString());
+      } catch (Exception e) {
+        logger.warn("Failed to convert to JSON: " + ctx.getBodyAsString());
+      }
     }
+    return null;
   }
 
   private void findId(JsonObject bodyJson, JsonObject parent) {
