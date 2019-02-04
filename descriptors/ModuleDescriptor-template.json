@@ -17,7 +17,7 @@
         "audit.item.post"
       ],
       "phase": "pre",
-      "type": "request-only"
+      "type": "request-log"
     },
     {
       "methods": [
@@ -28,7 +28,7 @@
         "audit.item.post"
       ],
       "phase": "post",
-      "type": "request-only"
+      "type": "request-log"
     }
   ],
   "provides": [],
