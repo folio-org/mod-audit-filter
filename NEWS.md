@@ -1,3 +1,6 @@
+## 0.0.5
+* MODAFILT-6: Use filter type=request-log
+
 ## 0.0.4
 * MODAFILT-5: check content type before converting to JSON
 
