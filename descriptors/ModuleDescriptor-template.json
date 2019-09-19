@@ -35,8 +35,10 @@
   "permissionSets": [],
   "launchDescriptor": {
     "dockerImage": "${artifactId}:${version}",
+    "dockerPull": false,
     "dockerArgs": {
       "HostConfig": {
+        "Memory": 357913941,
         "PortBindings": {
           "8081/tcp": [
             {
@@ -46,6 +48,11 @@
         }
       }
     },
-    "dockerPull": false
+    "env": [
+      {
+        "name": "JAVA_OPTIONS",
+        "value": "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+      }
+    ]
   }
 }
